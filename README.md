@@ -8,7 +8,7 @@ Model for unmyelinated axon segmentation in TEM images, based on nnUNetv2.
 **TODO** show how to use the inference script
 
 ## Data
-The dataset can be found in the NeuroPoly internal data server. Look for `datasets/data_axondeepseg_unmyelinated`
+The dataset can be found in the NeuroPoly internal data server. Look for `datasets/data_axondeepseg_sickkids`
 
 **TODO** show how to use script to preprocess data
 
