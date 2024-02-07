@@ -230,20 +230,8 @@ def main(args):
     with open(train_test_split_path, "r") as f:
         train_test_split_dict = json.load(f)
 
-    train_participant_to_sample_dict = {}
-    test_participant_to_sample_dict = {}
-
-    for sample_id, participant_id in train_test_split_dict["train"].items():
-        if participant_id in train_participant_to_sample_dict:
-            train_participant_to_sample_dict[participant_id].append(sample_id)
-        else:
-            train_participant_to_sample_dict[participant_id] = [sample_id]
-
-    for sample_id, participant_id in train_test_split_dict["test"].items():
-        if participant_id in test_participant_to_sample_dict:
-            test_participant_to_sample_dict[participant_id].append(sample_id)
-        else:
-            test_participant_to_sample_dict[participant_id] = [sample_id]
+    train_participant_to_sample_dict = train_test_split_dict["train"]
+    test_participant_to_sample_dict = train_test_split_dict["test"]
 
     dataset_info = {
         "name": dataset_name,
