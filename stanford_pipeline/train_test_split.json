@@ -1,0 +1,34 @@
+{
+    "train": {
+        "sub-372": [
+            "sample-0005_acq-roi_chunk-01",
+            "sample-0005_acq-roi_chunk-02"
+        ],
+        "sub-373C": [
+            "sample-0001_acq-roi_chunk-01",
+            "sample-0001_acq-roi_chunk-02"
+        ],
+        "sub-374": [
+            "sample-0004_acq-roi_chunk-01",
+            "sample-0004_acq-roi_chunk-02"
+        ],
+        "sub-375": [
+            "sample-0001_acq-roi_chunk-01",
+            "sample-0001_acq-roi_chunk-02"
+        ]
+    },
+    "test": {
+        "sub-372": [
+            "sample-0005"
+        ],
+        "sub-373C": [
+            "sample-0001"
+        ],
+        "sub-374": [
+            "sample-0004"
+        ],
+        "sub-375": [
+            "sample-0001"
+        ]
+    }
+}
