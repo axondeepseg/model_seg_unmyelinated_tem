@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Prepares a new dataset for nnUNetv2, focusing on SEM segmentation.
+Prepares a new dataset for nnUNetv2, focusing on unmyelinated axon segmentation
+in TEM data.
 
 Features:
 - Training Set Compilation: Includes all subjects with annotations in the 
@@ -107,7 +108,7 @@ def process_labels(
     particpant_to_sample_dict: Dict[str, List[str]],
     bids_to_nnunet_dict: Dict[str, int],
     dataset_name: str,
-    label_type: Literal["axonmyelin", "myelin", "axon"] = "axonmyelin",
+    label_type: Literal["axonmyelin", "myelin", "uaxon"] = "uaxon",
 ):
     """
     Processes label images from a list of subjects, matching each image with the label having the largest 'N' number.
@@ -124,10 +125,10 @@ def process_labels(
         Dictionary mapping subject names to case IDs.
     dataset_name : str
         Name of the dataset.
-    label_type : Literal["axonmyelin", "myelin", "axon"], optional
-        Type of label to use. Options are 'axonmyelin', 'myelin', or 'axon'. Defaults to 'axonmyelin'.
+    label_type : Literal["axonmyelin", "myelin", "uaxon"], optional
+        Type of label to use. Options are 'axonmyelin', 'myelin', or 'uaxon'. Defaults to 'uaxon'.
     """
-    label_type_to_divisor = {"axonmyelin": 127, "myelin": 255, "axon": 255}
+    label_type_to_divisor = {"axonmyelin": 127, "myelin": 255, "uaxon": 255}
     for subject in particpant_to_sample_dict.keys():
         for image in particpant_to_sample_dict[subject]:
             case_id = bids_to_nnunet_dict[str((subject, image))]
@@ -137,7 +138,7 @@ def process_labels(
                 "labels",
                 subject,
                 "micr",
-                f"{subject}_{image}_SEM_seg-{label_type}-manual.png",
+                f"{subject}_{image}_TEM_seg-{label_type}-manual.png",
             )
             label = np.round(
                 cv2.imread(str(label_path), cv2.IMREAD_GRAYSCALE)
@@ -314,8 +315,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--LABELTYPE",
-        default="axon",
-        help="Type of label to use. Options are 'axonmyelin', 'myelin', or 'axon'. Defaults to 'axonmyelin'",
+        default="uaxon",
+        help="Type of label to use. Options are 'axonmyelin', 'myelin', or 'uaxon'. Defaults to 'uaxon'",
     )
     parser.add_argument(
         "--DATASETID",
