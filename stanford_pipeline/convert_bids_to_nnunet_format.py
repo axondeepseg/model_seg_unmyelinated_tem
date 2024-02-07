@@ -13,6 +13,8 @@ Features:
   inspired by Armand Collin's work. The original script by Armand Collin can
   be found at:
   https://github.com/axondeepseg/model_seg_rabbit_axon-myelin_bf/blob/main/nnUNet_scripts/prepare_data.py
+
+Modified on 2024-02-07 by Armand Collin to support an unmyelinated axon dataset.
 """
 
 
@@ -306,7 +308,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--DESCRIPTION",
         default="TEM unmyelinated axon segmentation dataset for nnUNetv2",
-        help="Description of the new dataset, defaults to SEM segmentation dataset for nnUNetv2",
+        help="Description of the new dataset, defaults to 'TEM unmyelinated axon segmentation dataset for nnUNetv2'",
     )
     parser.add_argument(
         "--SPLITJSON",
