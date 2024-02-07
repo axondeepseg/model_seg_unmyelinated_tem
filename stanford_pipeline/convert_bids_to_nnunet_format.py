@@ -94,7 +94,7 @@ def process_images(
         for image in particpant_to_sample_dict[subject]:
             case_id = bids_to_nnunet_dict[str((subject, image))]
             image_path = os.path.join(
-                datapath, subject, "micr", f"{subject}_{image}_SEM.png"
+                datapath, subject, "micr", f"{subject}_{image}_TEM.png"
             )
             img = cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
             fname = f"{dataset_name}_{case_id:03d}{image_suffix}.png"
@@ -312,29 +312,29 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--DATASETNAME",
-        default="SEM",
-        help="Name of the new dataset, defaults to SEM",
+        default="TEM_STANFORD",
+        help="Name of the new dataset, defaults to TEM_STANFORD",
     )
     parser.add_argument(
         "--DESCRIPTION",
-        default="SEM segmentation dataset for nnUNetv2",
+        default="TEM unmyelinated axon segmentation dataset for nnUNetv2",
         help="Description of the new dataset, defaults to SEM segmentation dataset for nnUNetv2",
     )
     parser.add_argument(
         "--SPLITJSON",
-        default="nn_unet_scripts/train_test_split.json",
+        default="train_test_split.json",
         help="Path to the train_test_split.json file",
     )
     parser.add_argument(
         "--LABELTYPE",
-        default="axonmyelin",
+        default="axon",
         help="Type of label to use. Options are 'axonmyelin', 'myelin', or 'axon'. Defaults to 'axonmyelin'",
     )
     parser.add_argument(
         "--DATASETID",
-        default=1,
+        default=10,
         type=int,
-        help="ID of the dataset. This ID is formatted with 3 digits. For example, 1 becomes '001', 23 becomes '023', etc. Defaults to 1",
+        help="ID of the dataset. This ID is formatted with 3 digits. For example, 1 becomes '001', 23 becomes '023', etc. Defaults to 10",
     )
     args = parser.parse_args()
     main(args)
