@@ -229,7 +229,6 @@ def main(args):
 
     with open(train_test_split_path, "r") as f:
         train_test_split_dict = json.load(f)
-
     train_participant_to_sample_dict = train_test_split_dict["train"]
     test_participant_to_sample_dict = train_test_split_dict["test"]
 
