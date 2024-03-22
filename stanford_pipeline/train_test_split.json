@@ -13,8 +13,7 @@
             "sample-0004_acq-roi_chunk-02"
         ],
         "sub-375": [
-            "sample-0001_acq-roi_chunk-01",
-            "sample-0001_acq-roi_chunk-02"
+            "sample-0001"
         ]
     },
     "test": {
@@ -28,7 +27,23 @@
             "sample-0004"
         ],
         "sub-375": [
-            "sample-0001"
+            "sample-0002",
+            "sample-0003",
+            "sample-0004",
+            "sample-0005",
+            "sample-0006",
+            "sample-0007",
+            "sample-0008"
+        ],
+        "sub-370": [
+            "sample-0001",
+            "sample-0002",
+            "sample-0003",
+            "sample-0004",
+            "sample-0005",
+            "sample-0006",
+            "sample-0007",
+            "sample-0008"
         ]
     }
 }
