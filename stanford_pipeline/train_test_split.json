@@ -1,48 +1,53 @@
 {
     "train": {
+        "sub-370": [
+            "sample-0006",
+            "sample-0007"
+        ],
         "sub-372": [
-            "sample-0005_acq-roi_chunk-01",
-            "sample-0005_acq-roi_chunk-02"
+            "sample-0005"
         ],
         "sub-373C": [
             "sample-0001_acq-roi_chunk-01",
             "sample-0001_acq-roi_chunk-02"
         ],
         "sub-374": [
-            "sample-0004_acq-roi_chunk-01",
-            "sample-0004_acq-roi_chunk-02"
-        ],
-        "sub-375": [
-            "sample-0001"
-        ]
-    },
-    "test": {
-        "sub-372": [
-            "sample-0005"
-        ],
-        "sub-373C": [
-            "sample-0001"
-        ],
-        "sub-374": [
             "sample-0004"
         ],
         "sub-375": [
-            "sample-0002",
-            "sample-0003",
-            "sample-0004",
+            "sample-0001",
             "sample-0005",
             "sample-0006",
-            "sample-0007",
-            "sample-0008"
-        ],
+            "sample-0007"
+        ]
+    },
+    "test": {
         "sub-370": [
             "sample-0001",
             "sample-0002",
             "sample-0003",
             "sample-0004",
             "sample-0005",
-            "sample-0006",
-            "sample-0007",
+            "sample-0008"
+        ],
+        "sub-372": [
+            "sample-0001",
+            "sample-0002",
+            "sample-0003",
+            "sample-0004"
+        ],
+        "sub-373C": [
+            "sample-0001"
+        ],
+        "sub-374": [
+            "sample-0001",
+            "sample-0002",
+            "sample-0003"
+        ],
+        "sub-375": [
+            "sample-0002",
+            "sample-0003",
+            "sample-0004",
             "sample-0008"
         ]
     }
