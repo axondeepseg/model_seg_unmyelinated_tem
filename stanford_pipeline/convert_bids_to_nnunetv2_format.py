@@ -9,13 +9,25 @@ Features:
   annotated subjects.
 - Testing Set Assignment: Allocates subjects without annotations to the 
   testing set, facilitating model performance evaluation on unseen data.
-- Inspiration: The structure and methodology of this script is
-  inspired by Armand Collin's work. The original script by Armand Collin can
-  be found at:
-  https://github.com/axondeepseg/model_seg_rabbit_axon-myelin_bf/blob/main/nnUNet_scripts/prepare_data.py
+- 5-class label fusion: Combines all 5 classes into a single label map for 
+  nnunet. The classes are: (unmyelinated + myelinated) axon, myelin, nuclei
+  and process.
 
 Modified on 2024-02-07 by Armand Collin to support an unmyelinated axon dataset.
 """
+
+# note that order matters: important because we want to read u-axon mask first
+# to overwrite it when it overlaps with other classes; this helps us get rid of
+# most false positives in the u-axon masks
+MASKS_TO_LOAD = ["uaxon", "axonmyelin", "nuclei", "process"]
+CLASS_MAPPING = {
+    "background": 0,
+    "uaxon": 1, 
+    "myelin": 2,        # these are both contained in
+    "axon": 3,          # a single `axonmyelin` mask
+    "nuclei": 4, 
+    "process": 5,
+}
 
 
 __author__ = "Arthur Boschet"
@@ -26,7 +38,6 @@ import argparse
 import csv
 import json
 import os
-import re
 from pathlib import Path
 from typing import Dict, List, Literal
 
@@ -109,11 +120,11 @@ def process_labels(
     out_folder: str,
     particpant_to_sample_dict: Dict[str, List[str]],
     bids_to_nnunet_dict: Dict[str, int],
-    dataset_name: str,
-    label_type: Literal["axonmyelin", "myelin", "uaxon"] = "uaxon",
+    dataset_name: str
 ):
     """
     Processes label images from a list of subjects, matching each image with the label having the largest 'N' number.
+    Careful: axonmyelin masks contain 2 classes so they are processed differently than other masks.
 
     Parameters
     ----------
@@ -130,24 +141,37 @@ def process_labels(
     label_type : Literal["axonmyelin", "myelin", "uaxon"], optional
         Type of label to use. Options are 'axonmyelin', 'myelin', or 'uaxon'. Defaults to 'uaxon'.
     """
-    label_type_to_divisor = {"axonmyelin": 127, "myelin": 255, "uaxon": 255}
     for subject in particpant_to_sample_dict.keys():
         for image in particpant_to_sample_dict[subject]:
             case_id = bids_to_nnunet_dict[str((subject, image))]
-            label_path = os.path.join(
-                datapath,
-                "derivatives",
-                "labels",
-                subject,
-                "micr",
-                f"{subject}_{image}_TEM_seg-{label_type}-manual.png",
-            )
-            label = np.round(
-                cv2.imread(str(label_path), cv2.IMREAD_GRAYSCALE)
-                / label_type_to_divisor[label_type]
-            )
-            fname = f"{dataset_name}_{case_id:03d}.png"
-            cv2.imwrite(os.path.join(out_folder, "labelsTr", fname), label)
+            label_dir = datapath / "derivatives" / "labels" / subject / "micr"
+            output_fname = Path(out_folder) / "labelsTr" / f"{dataset_name}_{case_id:03d}.png"
+
+            for mask_name in MASKS_TO_LOAD:
+                label_path = label_dir / f"{subject}_{image}_TEM_seg-{mask_name}-manual.png"
+                if mask_name in ["uaxon", "axonmyelin"]:
+                    assert label_path.exists(), f"Missing a mandatory label for {subject}."
+                elif not label_path.exists():
+                    # process and nuclei masks are optional
+                    continue
+                
+                rescaling_factor = 127 if mask_name == "axonmyelin" else 255
+                # this gives us either an image with values [0, 1] or [0, 1, 2]
+                label = np.round(cv2.imread(str(label_path), cv2.IMREAD_GRAYSCALE) / rescaling_factor)
+
+                if mask_name == "uaxon" and not output_fname.exists():
+                    cv2.imwrite(str(output_fname), label)
+                else:
+                    # read the existing mask and merge the current class into it,
+                    # overwriting previously written regions that overlap
+                    existing_label = cv2.imread(str(output_fname), cv2.IMREAD_GRAYSCALE)
+                    if mask_name == "axonmyelin":
+                        existing_label[label == 1] = CLASS_MAPPING["myelin"]
+                        existing_label[label == 2] = CLASS_MAPPING["axon"]
+                    else:
+                        existing_label[label == 1] = CLASS_MAPPING[mask_name]
+                    cv2.imwrite(str(output_fname), existing_label)
+
 
 
 def create_bids_to_nnunet_dict(file_path: Path) -> Dict[str, int]:
@@ -218,7 +242,6 @@ def main(args):
     datapath = Path(args.DATAPATH)
     target_dir = Path(args.TARGETDIR)
     train_test_split_path = Path(args.SPLITJSON)
-    label_type = args.LABELTYPE
     dataset_id = str(args.DATASETID).zfill(3)
 
     out_folder = os.path.join(
@@ -238,11 +261,7 @@ def main(args):
     dataset_info = {
         "name": dataset_name,
         "description": description,
-        "labels": {"background": 0, "myelin": 1, "axon": 2}
-        if label_type == "axonmyelin"
-        else {"background": 0, "myelin": 1}
-        if label_type == "myelin"
-        else {"background": 0, "axon": 1},
+        "labels": CLASS_MAPPING,
         "channel_names": {"0": "rescale_to_0_1"},
         "numTraining": len(
             [
@@ -276,7 +295,6 @@ def main(args):
         train_participant_to_sample_dict,
         bids_to_nnunet_dict,
         dataset_name,
-        label_type=label_type,
     )
     process_images(
         datapath,
@@ -314,11 +332,6 @@ if __name__ == "__main__":
         "--SPLITJSON",
         default="train_test_split.json",
         help="Path to the train_test_split.json file",
-    )
-    parser.add_argument(
-        "--LABELTYPE",
-        default="uaxon",
-        help="Type of label to use. Options are 'axonmyelin', 'myelin', or 'uaxon'. Defaults to 'uaxon'",
     )
     parser.add_argument(
         "--DATASETID",
