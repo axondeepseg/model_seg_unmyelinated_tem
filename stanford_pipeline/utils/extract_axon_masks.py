@@ -1,3 +1,7 @@
+'''Extracts axon and myelin masks from nnunet raw predictions. This util writes 
+binary masks for axon, myelin and unmyelinated axon classes. The axon and myelin
+masks are also merged.
+'''
 import cv2
 import argparse
 import numpy as np
