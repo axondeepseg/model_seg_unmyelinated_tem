@@ -33,6 +33,7 @@ def main():
 
     total_axon_count = 0
     total_uaxon_count = 0
+    total_size = 0
     for img in tqdm(inputs):
         if not mask_mode:
             # read morphometric files
@@ -44,6 +45,7 @@ def main():
             
             axonmyelin = cv2.imread(axonmyelin_mask, cv2.IMREAD_GRAYSCALE) > 200
             uaxon = cv2.imread(uaxon_mask, cv2.IMREAD_GRAYSCALE) > 200
+            total_size += axonmyelin.shape[0] * axonmyelin.shape[1]
 
             # count axons
             axon_objects = skm.regionprops(skm.label(axonmyelin))
@@ -62,6 +64,7 @@ def main():
     df = pd.DataFrame(counts)
     df.to_csv(out_name, index=False)
     print(f'Total axon count: {total_axon_count}\nTotal unmyelinated axon count: {total_uaxon_count}')
+    print(f'Multiply this total size in pixels to the pixel size to obtain total area covered: {total_size}')
 
     
 if __name__ == "__main__":
