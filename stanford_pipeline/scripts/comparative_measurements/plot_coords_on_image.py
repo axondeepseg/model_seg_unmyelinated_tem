@@ -41,7 +41,9 @@ def overlay_coordinates_on_image(image_path: Path, coords: list):
         coords (list): List of tuples containing coordinates (x, y).
     """
     try:
-        image = Image.open(image_path).convert("RGBA")
+        image = Image.open(image_path).convert("RGB")
+        # fill with black
+        image = Image.new("RGB", image.size, (0, 0, 0))
         draw = ImageDraw.Draw(image)
 
         for y, x in coords:
