@@ -50,7 +50,7 @@ def main(csv_dir: Path, segmented_dir: Path):
     
     for img_path in img_list:
         stem = img_path.stem
-        print(f'Processing {stem}...')
+        print(f'\t\tProcessing {stem}...')
         
         csv_path = csv_dir / f'{stem}_manual_gratios.csv'
         morpho_path = segmented_dir / f'{stem}_axon_morphometrics.xlsx'
@@ -65,7 +65,7 @@ def main(csv_dir: Path, segmented_dir: Path):
 
         output_df = df_manual.copy()
         output_df['axon_id'] = None
-        output_df['auto_g-ratio'] = None
+        output_df['auto_gratio'] = None
         output_df['auto_axon_diam'] = None
         output_df['auto_myelin_thickness'] = None
 
@@ -75,20 +75,20 @@ def main(csv_dir: Path, segmented_dir: Path):
             x, y = int(row['x_new']), int(row['y_new'])
             axon_id = instance_map[x, y] - 1
             if axon_id < 0:
-                print(f'Warning: Coordinate ({x}, {y}) not in myelin. Skipping.')
+                print(f'\tWarning: Coordinate ({x}, {y}) not in myelin. Skipping.')
                 continue
             axon_ids.append(axon_id)
 
             auto_row = df_auto.loc[axon_id]
 
             output_df.at[idx, 'axon_id'] = axon_id
-            output_df.at[idx, 'auto_g-ratio'] = auto_row['gratio']
+            output_df.at[idx, 'auto_gratio'] = auto_row['gratio']
             output_df.at[idx, 'auto_axon_diam'] = auto_row['axon_diam (um)']
             output_df.at[idx, 'auto_myelin_thickness'] = auto_row['myelin_thickness (um)']
 
         # check for duplicates
         if len(set(axon_ids)) < len(axon_ids):
-            print('If you read this, go fix duplicates.')
+            print('\tIf you read this, go fix duplicates.')
 
         output_path = csv_dir / f'{stem}_matched_gratios.csv'
         output_df.to_csv(output_path, index=False)
