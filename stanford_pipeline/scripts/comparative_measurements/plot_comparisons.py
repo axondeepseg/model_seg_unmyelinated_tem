@@ -27,10 +27,9 @@ def plot_gratio_comparison(df: pd.DataFrame, title: str, output_path: Path):
     manual_col = 'gratio'
     auto_col = 'auto_gratio'
 
-    plt.figure(figsize=(18, 6))
+    plt.figure(figsize=(6, 6))
     plt.style.use('https://github.com/dhaitz/matplotlib-stylesheets/raw/master/pitayasmoothie-dark.mplstyle')
     
-    plt.subplot(1, 2, 1)
     plt.title(title)
     sns.scatterplot(data=df, x=manual_col, y=auto_col)
     plt.plot([0, 1], [0, 1], 'm--')
@@ -38,18 +37,18 @@ def plot_gratio_comparison(df: pd.DataFrame, title: str, output_path: Path):
     plt.ylim(0.4, 1)    
     plt.xlabel('Manual')
     plt.ylabel('Automatic')
-    plt.tight_layout()
+    plt.savefig(output_path)
+    plt.close()
 
-    plt.subplot(1, 2, 2)
+    plt.figure(figsize=(6, 6))
     plt.title('Difference between manual VS automatic measurements')
     sns.scatterplot(data=df, x=manual_col, y=(df[manual_col] - df[auto_col]))
     plt.axhline(0, color='m', linestyle='--')
     plt.xlabel('Manual measurement')
     plt.ylabel('Manual - Automatic')
-    plt.tight_layout()
-
-    plt.savefig(output_path)
+    plt.savefig(str(output_path).replace('.png', '_diffs.png'))
     plt.close()
+
 
 
 def main(input_dir: str):
