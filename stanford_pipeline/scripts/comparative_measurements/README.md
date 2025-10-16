@@ -14,7 +14,7 @@ Second, you need to preprocess the raw, manual measurements exported from ImageJ
 python preprocess_manual_measurements.py 
 ```
 
-Then, you will need to match the axons between manual and automatic measurements. This requires 2 folders. The first directory contains the output CSV files from the previous command. The second directory contains all images + all ADS segmentations + all ADS morphometric files, i.e.
+Then, you will need to match the axons between manual and automatic measurements. This requires 2 folders. The first directory contains the CSV files resulting from the previous command. The second directory contains all images + all ADS segmentations + all ADS morphometric files, i.e.
 
 ```
 segmented_dir/
@@ -30,3 +30,11 @@ segmented_dir/
 ```bash
 python match_axons.py csv_dir segmented_dir
 ```
+
+Then, to visualize the comparison between automatic and manual measurements (for every individual images and globally), use this script:
+
+```bash
+python plot_comparisons.py csv_dir
+```
+
+![plot](global_comparison_plots.png)
