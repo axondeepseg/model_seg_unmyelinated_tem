@@ -35,20 +35,29 @@ def plot_gratio_comparison(df: pd.DataFrame, title: str, output_path: Path):
     plt.plot([0, 1], [0, 1], 'm--')
     plt.xlim(0.4, 1)
     plt.ylim(0.4, 1)    
-    plt.xlabel('Manual')
-    plt.ylabel('Automatic')
+    plt.xlabel('g-ratio (Manual)')
+    plt.ylabel('g-ratio (Automatic)')
     plt.savefig(output_path)
     plt.close()
 
     plt.figure(figsize=(6, 6))
-    plt.title('Difference between manual VS automatic measurements')
+    plt.title('Difference between manual VS automatic measurements\nagainst manual g-ratio')
     sns.scatterplot(data=df, x=manual_col, y=(df[manual_col] - df[auto_col]))
     plt.axhline(0, color='m', linestyle='--')
-    plt.xlabel('Manual measurement')
-    plt.ylabel('Manual - Automatic')
+    plt.xlabel('g-ratio (Manual)')
+    plt.ylabel('g-ratio diff (Manual - Automatic)')
     plt.savefig(str(output_path).replace('.png', '_diffs.png'))
     plt.close()
 
+    # also plot differences against axon diameter
+    plt.figure(figsize=(6, 6))
+    plt.title('Difference between manual VS automatic measurements\nagainst axon diameter')
+    sns.scatterplot(data=df, x=df['axon_diam'] * 0.0012325, y=(df[manual_col] - df[auto_col]))
+    plt.axhline(0, color='m', linestyle='--')
+    plt.xlabel('Axon Diameter (manual)')
+    plt.ylabel('g-ratio diff (Manual - Automatic)')
+    plt.savefig(str(output_path).replace('.png', '_diffs_vs_diam.png'))
+    plt.close()
 
 
 def main(input_dir: str):
